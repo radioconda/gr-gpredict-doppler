@@ -27,6 +27,9 @@ outputs:
     id: freq
     optional: true
 -   domain: message
+    id: tx_freq
+    optional: true
+-   domain: message
     id: state
     optional: true
 

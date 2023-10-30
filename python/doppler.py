@@ -56,6 +56,7 @@ class doppler_runner(threading.Thread):
       print("[doppler] Connected from: %s:%d" % (addr[0], addr[1]))
 
       cur_freq = 0
+      cur_tx_freq = 0
       while not self.stopThread:
         try:
           data = self.sock.recv(1024)
@@ -86,6 +87,20 @@ class doppler_runner(threading.Thread):
             sendMsgStr = "f: %d\n" % cur_freq
             self.sock.sendall(sendMsgStr.encode("UTF-8"))
             foundCommand = True
+          elif curCommand.startswith('I'):
+            tx_freq = int(curCommand[1:].strip())
+            if cur_tx_freq != tx_freq:
+              if self.verbose: print("[doppler] New tx frequency: %d" % tx_freq)
+              self.blockclass.sendTxFreq(tx_freq)
+              cur_tx_freq = tx_freq
+            self.sock.sendall("RPRT 0\n".encode("UTF-8"))
+            foundCommand = True
+          elif curCommand.startswith('i'):
+            sendMsgStr = "i: %d\n" % cur_tx_freq
+            self.sock.sendall(sendMsgStr.encode("UTF-8"))
+            foundCommand = True
+          elif curCommand.startswith('S'):
+            self.sock.sendall("RPRT 0\n".encode("UTF-8"))
           elif curCommand == 'q':
             # Radio sent a q on quit/disconnect.
             foundCommand = True
@@ -123,6 +138,7 @@ class doppler(gr.sync_block):
     self.thread = doppler_runner(self, gpredict_host, gpredict_port, verbose)
     self.thread.start()
     self.message_port_register_out(pmt.intern("freq"))
+    self.message_port_register_out(pmt.intern("tx_freq"))
     self.message_port_register_out(pmt.intern("state"))
 
   def stop(self):
@@ -148,6 +164,9 @@ class doppler(gr.sync_block):
   def sendFreq(self,freq):
     p = pmt.from_double(freq)
     self.message_port_pub(pmt.intern("freq"),pmt.cons(pmt.intern("freq"),p))
+  def sendTxFreq(self,freq):
+    p = pmt.from_double(freq)
+    self.message_port_pub(pmt.intern("tx_freq"),pmt.cons(pmt.intern("tx_freq"),p))
     
   def sendState(self,state):
     if (state):    
@@ -156,4 +175,3 @@ class doppler(gr.sync_block):
       newState = 0
       
     self.message_port_pub(pmt.intern("state"),pmt.cons( pmt.intern("state"), pmt.from_long(newState) ))
-    

@@ -55,5 +55,10 @@ add_custom_target(
 
 
 # Add subdirectories
+add_subdirectory(examples)
 add_subdirectory(python)
 add_subdirectory(grc)
+
+install(FILES MANIFEST.yml
+    RENAME MANIFEST-${VERSION_MAJOR}.${VERSION_API}.${VERSION_ABI}${VERSION_PATCH}.yml
+    DESTINATION share/gnuradio/manifests/gpredict_doppler)

@@ -1,0 +1,25 @@
+title: The GPREDICT_DOPPLER OOT Module
+version: 1.0
+brief: GNU Radio Gpredict Doppler shift correction block
+tags: # Tags are arbitrary, but look at CGRAN what other authors are using
+  - gpredict
+  - doppler
+  - satellite
+author:
+  - Wolfgang Nagele <mail@wnagele.com>
+  - ghostop14 <ghostop14@gmail.com>
+copyright_owner:
+  - Wolfgang Nagele
+  - ghostop14
+license: GPL-3.0-or-later
+gr_supported_version:
+  - 3.7
+  - 3.8
+  - 3.9
+  - 3.10
+repo: https://github.com/ghostop14/gr-gpredict-doppler
+website: https://github.com/ghostop14/gr-gpredict-doppler
+#icon: # Put a URL to a square image here that will be used as an icon
+description: |-
+  Python block that updates a GNU Radio variable with the absolute frequency as provided by Gpredict. This allows for Doppler shift corrected reception of satellite signals.
+file_format: 1
